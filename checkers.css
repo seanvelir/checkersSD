@@ -1,0 +1,80 @@
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.board {
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.black-checker,
+.red-checker {
+    border-radius: 50px;
+    cursor: pointer;
+    position: absolute;
+    height: 70px;
+    width: 70px;
+}
+
+.black-checker {
+    background: black;
+    border: 1px solid black;
+}
+
+.red-checker {
+    background: #A00;
+    border: 1px solid black;
+}
+
+.black-square,
+.red-square {
+    border: 2px solid black;
+    display: inline-block;
+    height: 80px;
+    width: 80px;
+    margin: 0;
+}
+
+.black-square {
+    background: #555;
+}
+
+.red-square {
+    background: #E22;
+}
+
+.row {
+  line-height: 0;
+}
+
+.highlight {
+  box-shadow: 10px 10px 20px;
+  height: 85px;
+  width: 85px;
+}
+
+.blackhole {
+  display: inline-block;
+  background: url("supermassive_black_hole.jpg");
+  background-size:  200px 200px;
+  border: 1px solid black;
+  box-shadow: 30px 30px 100px;
+  width: 200px;
+  height: 200px;
+  position: relative;
+  left: 20px;
+  top: -239px;
+}
+
+.info {
+  border: 1px solid black;
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px;
+  font-family: Arial;
+  font-size: 12px;
+  padding: 10px;
+  position: absolute;
+  left: 700px;
+  top: 15px;
+}
