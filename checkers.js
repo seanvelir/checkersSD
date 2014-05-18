@@ -1,4 +1,6 @@
 window.onload = function(ev) {
+  // This is the checker the user is holder, or else null.
+  // The user can only hold one checker at a time.
   var checkerInHand = null;
 
   function highlightChecker(checker, highlight) {
@@ -6,7 +8,7 @@ window.onload = function(ev) {
       checker.className += " highlight";
     } else {
       var className = checker.className;
-      checker.className = className.replace("highlight", "");
+      checker.className = className.replace(/(?:\s|^)highlight(?:\s|$)/, "");
     }
   }
 
@@ -24,10 +26,33 @@ window.onload = function(ev) {
   }
 
   function makeChecker(color) {
-    var div = document.createElement('div');
-    div.className = color + "-checker";
-    div.onclick = handleCheckerClicked;
-    return div;
+    var checker = document.createElement('div');
+    checker.className = color + "-checker";
+
+    checker.color = color;
+    checker.king = false;
+
+    checker.onclick = handleCheckerClicked;
+    return checker;
+  }
+
+  function kingMe(checker) {
+    checker.className += " kinged";
+    checker.king = true;
+  }
+
+  function maybeKingMe(checker, square) {
+    var KING_ROW_BLACK = 7;
+    var KING_ROW_RED   = 0;
+    
+    if (checker.color === "black" &&
+        square.boardPosition.y === KING_ROW_BLACK) {
+      kingMe(checker);
+    }
+    if (checker.color === "red" &&
+        square.boardPosition.y === KING_ROW_RED) {
+      kingMe(checker);
+    }
   }
 
   function handleSquareClicked(ev) {
@@ -38,6 +63,13 @@ window.onload = function(ev) {
     checkerInHand.style.left = this.offsetLeft + 6 + "px";
     checkerInHand.style.top = this.offsetTop + 6 + "px";
     highlightChecker(checkerInHand, false);
+
+    maybeKingMe(checkerInHand, this);
+
+    if (checkerInHand.spare) {
+      addReplacementSpare(checkerInHand);
+    }
+    
     checkerInHand = null;
   }
 
@@ -56,11 +88,13 @@ window.onload = function(ev) {
       row.className = "row";
       for (var j = 0; j < 8; ++j) {
         var square = makeSquare(j % 2 == i % 2 ? "black" : "red");
+        square.boardPosition = {x: j, y: i};
         row.appendChild(square);
       }
       board.appendChild(row);
     }
-    document.body.appendChild(board);
+
+    return board;
   }
   
   function setupRow(left, top, color) {
@@ -75,15 +109,18 @@ window.onload = function(ev) {
   }
 
   function setupBoard() {
-    setupRow(16, 16,   "black");
+    // TODO: Refactor so checkers are placed based on the target square,
+    // as in handleSquareClicked, instead of mere visually alignment.
+
+    setupRow(16,  16,  "black");
     setupRow(100, 100, "black");
-    setupRow(16, 184,  "black");
-    setupRow(100, 436,  "red");
-    setupRow(16, 520, "red");
-    setupRow(100, 604,  "red");
+    setupRow(16,  184, "black");
+    setupRow(100, 436, "red");
+    setupRow(16,  520, "red");
+    setupRow(100, 604, "red");
   }
 
-  function destroyChecker(checker) {
+  function deathByBlackHole(checker) {
     var checkerRect = checker.getBoundingClientRect();
     if (checkerRect.width < 10) {
       document.body.removeChild(checker);
@@ -97,7 +134,7 @@ window.onload = function(ev) {
     console.log(checkerRect.width);
 
     setTimeout(function() {
-      destroyChecker(checker);
+      deathByBlackHole(checker);
     }, 10);
   }
 
@@ -108,7 +145,7 @@ window.onload = function(ev) {
     checkerInHand.style.left = this.offsetLeft + 90 + "px";
     checkerInHand.style.top = this.offsetTop + 90 + "px";
 
-    destroyChecker(checkerInHand);
+    deathByBlackHole(checkerInHand);
     checkerInHand = null;
   }
 
@@ -118,8 +155,26 @@ window.onload = function(ev) {
     blackhole.onclick = handleClickOnBlackHole;
     document.body.appendChild(blackhole);
   }
+  
+  function makeSpare(color) {
+    var spare = makeChecker(color);
+    spare.spare = true;
+    spare.className += " spare-" + color;
+    return spare;
+  }
 
-  makeBoard();
+  function addSpareCheckers() {
+    document.body.appendChild(makeSpare("black"));
+    document.body.appendChild(makeSpare("red"));
+  }
+
+  function addReplacementSpare(checker) {
+    document.body.appendChild(makeSpare(checker.color));
+  }
+
+  // Initialize the game board.
+  document.body.appendChild(makeBoard());
   addBlackHole();
+  addSpareCheckers();
   setupBoard();
 }

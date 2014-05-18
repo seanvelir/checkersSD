@@ -8,6 +8,10 @@ body {
   display: inline-block;
 }
 
+.board .row {
+  line-height: 0;
+}
+
 .black-checker,
 .red-checker {
     border-radius: 50px;
@@ -22,9 +26,31 @@ body {
     border: 1px solid black;
 }
 
+.black-checker.kinged,
+.red-checker.kinged {
+    background: url("crown.png");
+    background-repeat: no-repeat;
+    background-size: 123%;
+    background-position-y: 40%;
+}
+
+.black-checker.kinged {
+    background-color: black;
+}
+
 .red-checker {
     background: #A00;
     border: 1px solid black;
+}
+
+.red-checker.kinged {
+    background-color: #A00;
+}
+
+.highlight {
+  box-shadow: 10px 10px 20px;
+  height: 85px;
+  width: 85px;
 }
 
 .black-square,
@@ -44,14 +70,14 @@ body {
     background: #E22;
 }
 
-.row {
-  line-height: 0;
+.spare-black {
+  left: 710px;
+  top: 123px;
 }
 
-.highlight {
-  box-shadow: 10px 10px 20px;
-  height: 85px;
-  width: 85px;
+.spare-red {
+  left: 810px;
+  top: 123px;
 }
 
 .blackhole {
@@ -62,9 +88,9 @@ body {
   box-shadow: 30px 30px 100px;
   width: 200px;
   height: 200px;
-  position: relative;
-  left: 20px;
-  top: -239px;
+  position: absolute;
+  left: 700px;
+  top: 242px;
 }
 
 .info {
